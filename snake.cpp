@@ -10,18 +10,24 @@ using namespace std;
 
 void gotoxy(int, int);
 bool gameOver(int, int);
+void marco();
 
 class Fruta{
 	private:
 		int x, y;
 	public:
 		bool existe(vector<int> v){
+			if ((v[0] == this->x) && (v[1] == this->y)){
+				return true;
+			}
 			return false;
 		}
 		void generar(){
 			srand(time(NULL));
 			x = 5 + (rand() % 70);
 			y = 3 + (rand() % 20);
+			gotoxy(x,y);
+			cout << "O";
 		}
 };
 
@@ -50,24 +56,23 @@ class Serpiente{
 		void incrementarLongtud(){
 			cantidad++;
 		}
-		void movimiento(){
-			gotoxy(x,y);
-			cout << "X";
-		}
 		
 };
 
 int main(){
+	
 	char opc = 'X';
-	int x = 1;
 	vector < vector<int> > f;
 	Serpiente s;
 	Fruta fruta;
+	
+	fruta.generar();
+	marco();
+	
 	while(true){
 		
 		while(!kbhit()){//Se movera en la posicion elegida anteriormente
 		
-//			s.movimiento();
 			vector <int> v;
 			v.push_back(s.getX());
 			v.push_back(s.getY());
@@ -83,18 +88,20 @@ int main(){
 			if(opc == 'X') s.setX(s.getX() + 1);
 			
 			Sleep(100);
-			system("cls");
 			
 			if(gameOver(s.getX(),s.getY())){
 				system("cls");
+				gotoxy(36,12);
 				cout << "GAME OVER";
+				gotoxy(0,20);
 				Sleep(100);
 				exit(1);
 			}
 			
 			if(!fruta.existe(v)){
+				gotoxy(f[0][0], f[0][1]);
+				cout << " ";
 				f.erase(f.begin());
-
 			}else{
 				s.incrementarLongtud();
 				fruta.generar();
@@ -122,15 +129,18 @@ int main(){
 		}		
 		Sleep(30);
 	}
+	
 	gotoxy(0,20);
 	return 0;
 }
+
 bool gameOver(int x, int y){
 	if(x == 79 || x == 0 || y == 0 || y == 24){
 		return true;
 	}
 	return false;
 }
+
 void gotoxy(int a,int b){
     HANDLE hcon;
     hcon = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -138,4 +148,19 @@ void gotoxy(int a,int b){
     dwPos.X = a;
     dwPos.Y= b;
     SetConsoleCursorPosition(hcon,dwPos);  
+}
+
+void marco(){
+	for(int i = 0; i < 79; i++){
+		gotoxy(i, 0);
+		cout << "#";
+		gotoxy(i, 24);
+		cout << "#";
+	}
+	for(int i = 0; i < 24; i++){
+		gotoxy(0, i);
+		cout << "#";
+		gotoxy(79, i);
+		cout << "#";
+	}
 }
