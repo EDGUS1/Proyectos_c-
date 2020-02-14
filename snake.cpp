@@ -56,7 +56,9 @@ class Serpiente{
 		void incrementarLongtud(){
 			cantidad++;
 		}
-		
+		int getScore(){
+			return cantidad * 10;
+		}
 };
 
 int main(){
@@ -93,6 +95,8 @@ int main(){
 				system("cls");
 				gotoxy(36,12);
 				cout << "GAME OVER";
+				gotoxy(35,13);
+				cout << "SCORE = " << s.getScore();
 				gotoxy(0,20);
 				Sleep(100);
 				exit(1);
