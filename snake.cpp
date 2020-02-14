@@ -3,11 +3,27 @@
 #include <time.h>
 #include <stdlib.h>
 #include <conio.h>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 
 void gotoxy(int, int);
 bool gameOver(int, int);
+
+class Fruta{
+	private:
+		int x, y;
+	public:
+		bool existe(vector<int> v){
+			return false;
+		}
+		void generar(){
+			srand(time(NULL));
+			x = 5 + (rand() % 70);
+			y = 3 + (rand() % 20);
+		}
+};
 
 class Serpiente{
 	private:
@@ -34,40 +50,39 @@ class Serpiente{
 		void incrementarLongtud(){
 			cantidad++;
 		}
-		void movimiento(char a){
+		void movimiento(){
 			gotoxy(x,y);
-			if(a == 'x'){
-				for(int i = 0; i < cantidad; i++){
-					cout << "X";
-				}
-			}else if(a == 'y'){
-				for(int i = 0; i < cantidad; i++){
-					cout << "X\n";
-				}
-			}else{
-				cout << "X";
-			}
+			cout << "X";
 		}
 		
 };
 
 int main(){
 	char opc = 'X';
+	int x = 1;
+	vector < vector<int> > f;
 	Serpiente s;
+	Fruta fruta;
 	while(true){
-		s.movimiento(opc);
+		
 		while(!kbhit()){//Se movera en la posicion elegida anteriormente
-			if(opc == 'x'){
-				s.setX(s.getX() - 1);
-//				s.incrementarLongtud();
+		
+//			s.movimiento();
+			vector <int> v;
+			v.push_back(s.getX());
+			v.push_back(s.getY());
+			f.push_back(v);
+			
+			for(int i = 0; i < f.size(); i++){
+				gotoxy(f[i][0], f[i][1]);
+				cout << "X";
 			}
+			if(opc == 'x') s.setX(s.getX() - 1);
 			if(opc == 'Y') s.setY(s.getY() - 1);
-			if(opc == 'y'){
-				s.setY(s.getY() + 1);
-//				s.incrementarLongtud();
-			} 
+			if(opc == 'y') s.setY(s.getY() + 1);
 			if(opc == 'X') s.setX(s.getX() + 1);
-			Sleep(200);
+			
+			Sleep(100);
 			system("cls");
 			
 			if(gameOver(s.getX(),s.getY())){
@@ -77,7 +92,14 @@ int main(){
 				exit(1);
 			}
 			
-			s.movimiento(opc);
+			if(!fruta.existe(v)){
+				f.erase(f.begin());
+
+			}else{
+				s.incrementarLongtud();
+				fruta.generar();
+			}
+
 		}
 		
 		switch(getch()){ //Se elige la direccion del movimiento
@@ -98,8 +120,7 @@ int main(){
 				opc = 'X';
 				break;
 		}		
-		Sleep(200);
-		system("cls");
+		Sleep(30);
 	}
 	gotoxy(0,20);
 	return 0;

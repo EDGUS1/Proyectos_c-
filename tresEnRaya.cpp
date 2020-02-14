@@ -16,7 +16,7 @@ void cuadro2();
 bool busq(int mat[][3],int);
 bool ganador(int mat[][3]);
 
-string jug1 = "Jugador 1",  jug2 = "Jugador 2";
+string jug1 = "jugador 1",  jug2 = "jugador 2";
 
 int main(){
 	int opc, a,b, cont = 0, mat[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
