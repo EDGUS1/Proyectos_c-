@@ -23,7 +23,7 @@ class Objetivo{
 			posX = 3 + (rand() % 70);
 			posY = 2 + (rand() % 10);
 			gotoxy(posX, posY);
-			cout << "C";
+			cout << char(157);
 		}
 };
 
@@ -33,11 +33,11 @@ class Nave{
 	public:
 		Nave(){
 			x = 37;
-			y = 23;
+			y = 22;
 		}
 		void dibujar(){
 			gotoxy(x,y);
-			cout << "O";
+			cout << char(94);
 		}
 		void setX(int x){
 			(*this).x = x;
@@ -97,7 +97,7 @@ void disparo(int x, int y){
 	cout << "\a";
 	for(int i = 0; i < 21; i++){
 		gotoxy(x,y);
-		cout << ".";
+		cout << char(221);
 		Sleep(18);
 		gotoxy(x,y--);
 		cout << " ";
@@ -107,16 +107,24 @@ void disparo(int x, int y){
 void marco(){
 	for(int i = 0; i < 79; i++){
 		gotoxy(i, 0);
-		cout << "#";
-		gotoxy(i, 24);
-		cout << "#";
+		cout << char(205);
+		gotoxy(i, 23);
+		cout << char(205);
 	}
-	for(int i = 0; i < 24; i++){
+	for(int i = 0; i < 23; i++){
 		gotoxy(0, i);
-		cout << "#";
+		cout << char(186);
 		gotoxy(79, i);
-		cout << "#";
+		cout << char(186);
 	}
+	gotoxy(0,0);
+	cout << char(201);
+	gotoxy(0,23);
+	cout << char(200);
+	gotoxy(79,0);
+	cout << char(187);
+	gotoxy(79,23);
+	cout << char(188);
 }
 
 void gotoxy(int a,int b){

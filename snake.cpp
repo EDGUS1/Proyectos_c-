@@ -27,7 +27,7 @@ class Fruta{
 			x = 5 + (rand() % 70);
 			y = 3 + (rand() % 20);
 			gotoxy(x,y);
-			cout << "O";
+			cout << char(155);
 		}
 };
 
@@ -82,7 +82,7 @@ int main(){
 			
 			for(int i = 0; i < f.size(); i++){
 				gotoxy(f[i][0], f[i][1]);
-				cout << "X";
+				cout << char(219);
 			}
 			if(opc == 'x') s.setX(s.getX() - 1);
 			if(opc == 'Y') s.setY(s.getY() - 1);
@@ -139,7 +139,7 @@ int main(){
 }
 
 bool gameOver(int x, int y){
-	if(x == 79 || x == 0 || y == 0 || y == 24){
+	if(x == 79 || x == 0 || y == 0 || y == 23){
 		return true;
 	}
 	return false;
@@ -157,14 +157,22 @@ void gotoxy(int a,int b){
 void marco(){
 	for(int i = 0; i < 79; i++){
 		gotoxy(i, 0);
-		cout << "#";
-		gotoxy(i, 24);
-		cout << "#";
+		cout << char(205);
+		gotoxy(i, 23);
+		cout << char(205);
 	}
-	for(int i = 0; i < 24; i++){
+	for(int i = 0; i < 23; i++){
 		gotoxy(0, i);
-		cout << "#";
+		cout << char(186);
 		gotoxy(79, i);
-		cout << "#";
+		cout << char(186);
 	}
+	gotoxy(0,0);
+	cout << char(201);
+	gotoxy(0,23);
+	cout << char(200);
+	gotoxy(79,0);
+	cout << char(187);
+	gotoxy(79,23);
+	cout << char(188);
 }
