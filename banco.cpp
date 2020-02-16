@@ -4,6 +4,7 @@
 #include <windows.h> //Sleep
 #include <conio.h> //getch
 #include <time.h>
+#include <string.h>
 #include <stdlib.h>//atoi
 
 using namespace std;
@@ -12,7 +13,6 @@ using namespace std;
 void nuevaCuenta();
 void eliminarCuenta();
 void modificarCuenta();
-void ingresarCuenta();
 void mostrarCuentas();
 void buscarCuenta();
 string esEntero(int,int);
@@ -20,6 +20,10 @@ bool validarNumeroDeCuenta(string);
 string generarNumeroDeCuenta();
 void gotoxy(int,int);
 void menuCuenta();
+void estadoCuenta();
+void transaccion();
+void retiro();
+void ingresoDinero();
 
 //Clases
 class Persona{
@@ -100,7 +104,7 @@ int main(){
 			case 1: nuevaCuenta();break;
 			case 2: eliminarCuenta();break;
 			case 3: modificarCuenta();break;
-			case 4: ingresarCuenta; break;
+			case 4: menuCuenta(); break;
 			case 5: mostrarCuentas(); break;
 			case 6: buscarCuenta(); break;
 			default: cout << "Opcion no valida\n"; Sleep(800);
@@ -111,9 +115,9 @@ int main(){
 }
 
 void nuevaCuenta(){
-	
+
 	string nombre, apellido, dni;
-	int edad;
+	int edad, monto;
 	escribir.open("Registro.txt",ios::app | ios::out);
 	
 	if(escribir.fail()){
@@ -128,17 +132,19 @@ void nuevaCuenta(){
 	cout << "Apellido: "; getline(cin, apellido);
 	cout << "DNI:      "; dni = esEntero(10,3); 
 	cout << "Edad:     "; edad = atoi(esEntero(10,4).c_str()); 
+	cout << "Monto:	   "; monto = atoi(esEntero(10,4).c_str()); 
 	
-	Persona p(nombre,apellido,dni,edad,0);
+	Persona p(nombre,apellido,dni,edad,monto);
 	
-	escribir << p.getNombre() <<"\t "<< p.getApellido() <<"\t "<< p.getDni() <<"\t "<< p.getEdad() << "\t " << p.getNumeroDeCuenta() << endl; 
+	escribir << p.getNombre() <<" "<< p.getApellido() <<" "<< p.getDni() <<" "<< p.getEdad() << " ";
+	escribir << p.getNumeroDeCuenta() << " " << p.getSaldo() << " " << p.getNumeroDeTransacciones() << endl; 
 	escribir.close();
 	
 	cout << "Registrado....\nPresione una tecla para volver al menu anterior....";
 	getch();
 }
 void mostrarCuentas(){
-	string auxNombre, auxApellido, auxDni, auxEdad, auxNumeroDeCuenta;
+	string auxNombre, auxApellido, auxDni, auxEdad, auxNumeroDeCuenta, auxMonto, auxT;
 	leer.open("Registro.txt", ios::in);
 	if(leer.fail()){
 		cout << "Error ";
@@ -154,6 +160,8 @@ void mostrarCuentas(){
 		leer >> auxDni;
 		leer >> auxEdad;
 		leer >> auxNumeroDeCuenta;
+		leer >> auxMonto;
+		leer >> auxT;
 		cout << "-------------------------------------------\n";
 		cout << "Nombre:  	 	" << auxNombre << endl;
 		cout << "Apellido: 		" << auxApellido << endl;
@@ -168,15 +176,15 @@ void mostrarCuentas(){
 	getch();
 }
 void eliminarCuenta(){
-	string auxNombre, auxApellido, auxDni, auxEdad, auxNumeroDeCuenta, var;
-	ofstream nuevo;
+	string auxNombre, auxApellido, auxDni, auxEdad, auxNumeroDeCuenta, var, auxMonto, auxT;
+
 	leer.open("Registro.txt", ios::in);
-	nuevo.open("RegistroAuxiliar.txt", ios::out | ios::app);
+	escribir.open("RegistroAuxiliar.txt", ios::out | ios::app);
 	if(leer.fail()){
 		cout << "Error ";
 		exit(1);
 	}
-	if(nuevo.fail()){
+	if(escribir.fail()){
 		cout << "Error ";
 		exit(1);
 	}
@@ -189,6 +197,8 @@ void eliminarCuenta(){
 		leer >> auxDni;
 		leer >> auxEdad;
 		leer >> auxNumeroDeCuenta;
+		leer >> auxMonto;
+		leer >> auxT;
 		if(var == auxDni || var == auxNumeroDeCuenta){
 			cout << "-----------------------------------------\n";
 			cout << "\tEL REGISTRO SE HA ELIMINADO\n";
@@ -200,12 +210,13 @@ void eliminarCuenta(){
 			cout << "Numero de Cuenta	:" << auxNumeroDeCuenta << endl;
 			cout << "-----------------------------------------\n\n";
 		}else{
-			nuevo << auxNombre << "\t " << auxApellido << "\t " << auxDni << "\t " << auxEdad << "\t " << auxNumeroDeCuenta << endl;
+			escribir << auxNombre << " " << auxApellido << " " << auxDni << " " << auxEdad << " " << auxNumeroDeCuenta << " ";
+			escribir << auxMonto << " " << auxT <<endl;
 		}
 		leer >> auxNombre;
 	}
 	leer.close();
-	nuevo.close();
+	escribir.close();
 	remove("Registro.txt");
 	rename("RegistroAuxiliar.txt","Registro.txt");
 	
@@ -213,16 +224,16 @@ void eliminarCuenta(){
 	getch();
 }
 void modificarCuenta(){
-	string auxNombre, auxApellido, auxDni, auxEdad, auxNumeroDeCuenta, var, nuevoNombre, nuevoApellido, nuevoDni;
+	string auxNombre, auxApellido, auxDni, auxEdad, auxNumeroDeCuenta, var, nuevoNombre, nuevoApellido, nuevoDni, auxMonto, auxT;
 	int nuevaEdad;
-	ofstream nuevo;
+
 	leer.open("Registro.txt", ios::in);
-	nuevo.open("RegistroAuxiliar.txt", ios::out | ios::app);
+	escribir.open("RegistroAuxiliar.txt", ios::out | ios::app);
 	if(leer.fail()){
 		cout << "Error ";
 		exit(1);
 	}
-	if(nuevo.fail()){
+	if(escribir.fail()){
 		cout << "Error ";
 		exit(1);
 	}
@@ -235,6 +246,8 @@ void modificarCuenta(){
 		leer >> auxDni;
 		leer >> auxEdad;
 		leer >> auxNumeroDeCuenta;
+		leer >> auxMonto;
+		leer >> auxT;
 		if(var == auxDni || var == auxNumeroDeCuenta){
 			fflush(stdin);
 			cout << "-----------------------------------------\n";
@@ -256,25 +269,24 @@ void modificarCuenta(){
 			cout << "Numero de Cuenta	:" << auxNumeroDeCuenta << endl;
 			cout << "-----------------------------------------\n\n";
 			
-			nuevo << nuevoNombre << "\t " << nuevoApellido << "\t " << nuevoDni << "\t " << nuevaEdad << "\t " << auxNumeroDeCuenta << endl;
+			escribir << nuevoNombre << " " << nuevoApellido << " " << nuevoDni << " " << nuevaEdad << " " << auxNumeroDeCuenta;
+			escribir << " " << auxMonto << " "<< auxT << endl;
 		}else{
-			nuevo << auxNombre << "\t " << auxApellido << "\t " << auxDni << "\t " << auxEdad << "\t " << auxNumeroDeCuenta << endl;
+			escribir << auxNombre << " " << auxApellido << " " << auxDni << " " << auxEdad << " " << auxNumeroDeCuenta;
+			escribir << " " << auxMonto << " "<< auxT << endl;
 		}
 		leer >> auxNombre;
 	}
 	leer.close();
-	nuevo.close();
+	escribir.close();
 	remove("Registro.txt");
 	rename("RegistroAuxiliar.txt","Registro.txt");
 	
 	cout << "\nPresione una tecla para volver al menu anterior....";
 	getch();
 }
-void ingresarCuenta(){
-	
-}
 void buscarCuenta(){
-	string auxNombre, auxApellido, auxDni, auxEdad, var,auxNumeroDeCuenta;
+	string auxNombre, auxApellido, auxDni, auxEdad, var, auxNumeroDeCuenta, auxMonto, auxT;
 	leer.open("Registro.txt", ios::in);
 	if(leer.fail()){
 		cout << "Error ";
@@ -290,6 +302,8 @@ void buscarCuenta(){
 		leer >> auxDni;
 		leer >> auxEdad;
 		leer >> auxNumeroDeCuenta;
+		leer >> auxMonto;
+		leer >> auxT;
 		if(var == auxDni || var == auxNumeroDeCuenta){
 			cout << "-----------------------------------------\n";
 			cout << "Nombre			:" << auxNombre << endl;
@@ -398,8 +412,259 @@ void gotoxy(int a,int b){
     SetConsoleCursorPosition(hcon,dwPos);  
 }
 void menuCuenta(){
+	int opc;
+	do{
+		system("cls");
+		cout << "1. Estado de la cuenta\n2. Realizar transaccion\n3. Retirar dinero\n4. Ingresar dinero\n0. Salir\nOpcion: ";
+		opc = atoi(esEntero(8,4).c_str());
+		switch(opc){
+			case 0: break;
+			case 1: estadoCuenta();break;
+			case 2: transaccion();break;
+			case 3: retiro();break;
+			case 4: ingresoDinero();break;
+			default: cout << "Opcion no encontrada"; Sleep(800);
+		}
+	}while(opc != 0);
+	
+}
+void estadoCuenta(){
+	
+	string auxNombre, auxApellido, auxDni, auxEdad, auxNumeroDeCuenta, auxMonto, auxT, var;
 	system("cls");
-	cout << "";
+	
+	leer.open("Registro.txt", ios::in);
+	if(leer.fail()){
+		cout<<"Error";
+		exit(1);
+	}
+	cout << "Ingrese el Numero de Cuenta: ";
+	var = esEntero(29,0);
+	leer >> auxNombre;
+	while(!leer.eof()){
+		leer >> auxApellido;
+		leer >> auxDni;
+		leer >> auxEdad;
+		leer >> auxNumeroDeCuenta;
+		leer >> auxMonto;
+		leer >> auxT;
+		if(var == auxNumeroDeCuenta){
+			cout << "\n-----------------------------------------\n";
+			cout << "Nombre:			" << auxNombre;
+			cout << "\nNumero de cuenta:	" << auxNumeroDeCuenta;
+			cout << "\nMonto disponible: 	" << auxMonto;
+			cout << "\nN. Transacciones: 	" << auxT;
+			cout << "\n-----------------------------------------\n";
+		}
+		leer >> auxNombre;
+	}
+	leer.close();
+	cout << "Presione una tecla para volver...";
+	getch();
+}
+void transaccion(){
+	string auxNombre,aN1,aN2,auxApellido,aA1,aA2, auxDni,aD1,aD2, auxEdad,aE1,aE2, auxNumeroDeCuenta,aNC1,aNC2, auxMonto, auxT, var,var2;
+	int m, aM1,aM2,aT1,aT2;
+	ifstream leer2;
+	ofstream escribir2;
+	
+	system("cls");
+	
+	leer.open("Registro.txt", ios::in);
+	escribir.open("var.txt", ios::app | ios::out);
+	escribir2.open("var2.txt", ios::app | ios::out);
+	
+	if(leer.fail()){
+		cout<<"Error 1";
+		exit(1);
+	}
+	if(escribir.fail()){
+		cout<<"Error 2";
+		exit(1);
+	}
+	if(escribir2.fail()){
+		cout<<"Error 3";
+		exit(1);
+	}
+	cout << "Ingrese el Numero de Cuenta: ";
+	var = esEntero(29,0);
+	leer >> auxNombre;
+	while(!leer.eof()){
+		leer >> auxApellido;
+		leer >> auxDni;
+		leer >> auxEdad;
+		leer >> auxNumeroDeCuenta;
+		leer >> auxMonto;
+		leer >> auxT;
+		if(var == auxNumeroDeCuenta){
+			aN1 = auxNombre.c_str();
+			aA1 = auxApellido.c_str();
+			aD1 = auxDni.c_str();
+			aE1 = auxEdad.c_str();
+			aNC1 = auxNumeroDeCuenta.c_str();
+			aM1 = atoi(auxMonto.c_str());
+			aT1 = atoi(auxT.c_str());
+			cout << "Ingrese la cuenta de destino: ";
+			var2 = esEntero(29,0);
+		}else{
+			escribir << auxNombre << " " << auxApellido << " " << auxDni << " " << auxEdad << " " << auxNumeroDeCuenta;
+			escribir << " " << auxMonto << " "<< auxT << endl;
+		}
+		leer >> auxNombre;
+	}
+	escribir.close();
+	leer.close();
+	leer2.open("var.txt", ios::in);
+	if(leer2.fail()){
+		cout<<"Error";
+		exit(1);
+	}
+	fflush(stdin);
+	leer2 >> auxNombre;
+	while(!leer2.eof()){
+		leer2 >> auxApellido;
+		leer2 >> auxDni;
+		leer2 >> auxEdad;
+		leer2 >> auxNumeroDeCuenta;
+		leer2 >> auxMonto;
+		leer2 >> auxT;
+		if(var2 == auxNumeroDeCuenta){
+			aN2 = auxNombre.c_str();
+			aA2 = auxApellido.c_str();
+			aD2 = auxDni.c_str();
+			aE2 = auxEdad.c_str();
+			aNC2 = auxNumeroDeCuenta.c_str();
+			aM2 = atoi(auxMonto.c_str());
+			aT2 = atoi(auxT.c_str());
+			cout << "Ingrese el monto a traspasar: ";
+			fflush(stdin);
+			do{
+				gotoxy(30,2);
+				cout << "              ";
+				gotoxy(30,2);
+				m = atoi(esEntero(30,2).c_str());
+			}while(m > aM1);
+			aT1++;
+			aM1 -= m;
+			aM2 += m; 
+		}else{
+			escribir2 << auxNombre << " " << auxApellido << " " << auxDni << " " << auxEdad << " " << auxNumeroDeCuenta;
+			escribir2 << " " << auxMonto << " "<< auxT << endl;
+		}
+		leer2 >> auxNombre;
+	}
+	
+	escribir2 << aN1 << " " << aA1 << " " << aD1 << " " << aE1 << " " << aNC1 << " " << aM1 << " "<< aT1 << endl;
+	escribir2 << aN2 << " " << aA2 << " " << aD2 << " " << aE2 << " " << aNC2 << " " << aM2 << " "<< aT2 << endl;
+	
+	leer2.close();
+	escribir2.close();
+	
+	remove("Registro.txt");
+	remove("var.txt");
+	rename("var2.txt","Registro.txt");
+	
+	cout << "\nPresione una tecla para volver...";
+	getch();
+}
+void retiro(){
+	
+	string auxNombre, auxApellido, auxDni, auxEdad, auxNumeroDeCuenta, auxMonto, auxT, var;
+	int ret, aux;
+	system("cls");
+	leer.open("Registro.txt", ios::in);
+	escribir.open("var.txt", ios::app | ios::out);
+	
+	if(leer.fail()){
+		cout<<"Error 1";
+		exit(1);
+	}
+	if(escribir.fail()){
+		cout<<"Error 2";
+		exit(1);
+	}
+	cout << "Ingrese el Numero de Cuenta: ";
+	var = esEntero(29,0);
+	leer >> auxNombre;
+	while(!leer.eof()){
+		leer >> auxApellido;
+		leer >> auxDni;
+		leer >> auxEdad;
+		leer >> auxNumeroDeCuenta;
+		leer >> auxMonto;
+		leer >> auxT;
+		if(var == auxNumeroDeCuenta){
+			cout << "Ingrese el monto a retirar: ";
+			ret = atoi(esEntero(28,1).c_str());
+			aux = atoi(auxMonto.c_str());
+			aux -= ret;
+			if (aux < 0){
+				aux = 0;
+			}
+			cout << "Retiro completado";
+			escribir << auxNombre << " " << auxApellido << " " << auxDni << " " << auxEdad << " " << auxNumeroDeCuenta;
+			escribir << " " << aux << " "<< auxT << endl;
+		}else{
+			escribir << auxNombre << " " << auxApellido << " " << auxDni << " " << auxEdad << " " << auxNumeroDeCuenta;
+			escribir << " " << auxMonto << " "<< auxT << endl;
+		}
+		leer >> auxNombre;
+	}
+	
+	leer.close();
+	escribir.close();
+	remove("Registro.txt");
+	rename("var.txt","Registro.txt");
+	cout << "\nPresione una tecla para volver...";
+	getch();
+}
+void ingresoDinero(){
+	
+	string auxNombre, auxApellido, auxDni, auxEdad, auxNumeroDeCuenta, auxMonto, auxT, var;
+	int ret, aux;
+	system("cls");
+	leer.open("Registro.txt", ios::in);
+	escribir.open("var.txt", ios::app | ios::out);
+	
+	if(leer.fail()){
+		cout<<"Error";
+		exit(1);
+	}
+	if(escribir.fail()){
+		cout<<"Error";
+		exit(1);
+	}
+	cout << "Ingrese el Numero de Cuenta: ";
+	var = esEntero(29,0);
+	leer >> auxNombre;
+	while(!leer.eof()){
+		leer >> auxApellido;
+		leer >> auxDni;
+		leer >> auxEdad;
+		leer >> auxNumeroDeCuenta;
+		leer >> auxMonto;
+		leer >> auxT;
+		if(var == auxNumeroDeCuenta){
+			cout << "Ingrese el monto: ";
+			ret = atoi(esEntero(18,1).c_str());
+			aux = atoi(auxMonto.c_str());
+			aux += ret;
+			cout << "Ingreso completado";
+			escribir << auxNombre << " " << auxApellido << " " << auxDni << " " << auxEdad << " " << auxNumeroDeCuenta;
+			escribir << " " << aux << " "<< auxT << endl;
+		}else{
+			escribir << auxNombre << " " << auxApellido << " " << auxDni << " " << auxEdad << " " << auxNumeroDeCuenta;
+			escribir << " " << auxMonto << " "<< auxT << endl;
+		}
+		leer >> auxNombre;
+	}
+	
+	leer.close();
+	escribir.close();
+	remove("Registro.txt");
+	rename("var.txt","Registro.txt");
+	cout << "Presione una tecla para volver...";
+	getch();
 }
 
 
