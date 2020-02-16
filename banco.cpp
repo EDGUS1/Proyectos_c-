@@ -4,6 +4,7 @@
 #include <windows.h> //Sleep
 #include <conio.h> //getch
 #include <time.h>
+#include <stdlib.h>//atoi
 
 using namespace std;
 
@@ -14,9 +15,11 @@ void modificarCuenta();
 void ingresarCuenta();
 void mostrarCuentas();
 void buscarCuenta();
-bool esEntero();
+string esEntero(int,int);
 bool validarNumeroDeCuenta(string);
 string generarNumeroDeCuenta();
+void gotoxy(int,int);
+void menuCuenta();
 
 //Clases
 class Persona{
@@ -91,7 +94,7 @@ int main(){
 		system("cls");
 		cout << "\t\tMENU\n1. Aniadir cuenta\n2. Eliminar cuenta\n3. Modificar cuenta\n4. Ingresar a la cuenta (estado,traspaso,etc)\n5. Mostrar cuentas";
 		cout << "\n6. Buscar Cuenta\n0. Salir\nOpcion: ";
-		cin >> opc;
+		opc = atoi(esEntero(8,8).c_str());
 		switch(opc){
 			case 0: break;
 			case 1: nuevaCuenta();break;
@@ -103,7 +106,6 @@ int main(){
 			default: cout << "Opcion no valida\n"; Sleep(800);
 		}
 	}while(opc != 0);
-	
 	
 	return 0;
 }
@@ -124,8 +126,8 @@ void nuevaCuenta(){
 	cout << "\tNUEVO REGISTRO\n";
 	cout << "Nombre:   "; getline(cin, nombre);
 	cout << "Apellido: "; getline(cin, apellido);
-	cout << "DNI:      "; getline(cin, dni); //validar
-	cout << "Edad:     "; cin >> edad; //validar
+	cout << "DNI:      "; dni = esEntero(10,3); 
+	cout << "Edad:     "; edad = atoi(esEntero(10,4).c_str()); 
 	
 	Persona p(nombre,apellido,dni,edad,0);
 	
@@ -180,7 +182,7 @@ void eliminarCuenta(){
 	}
 	system("cls");
 	cout << "\nIngrese el Numero de Cuenta o DNI para buscar: ";
-	cin >> var;
+	var = esEntero(47,1);
 	leer >> auxNombre;
 	while(!leer.eof()){
 		leer >> auxApellido;
@@ -226,7 +228,7 @@ void modificarCuenta(){
 	}
 	system("cls");
 	cout << "\nIngrese el Numero de Cuenta o DNI para buscar: ";
-	cin >> var;
+	var = esEntero(47,1);
 	leer >> auxNombre;
 	while(!leer.eof()){
 		leer >> auxApellido;
@@ -240,8 +242,8 @@ void modificarCuenta(){
 			cout << "-----------------------------------------\n";
 			cout << "Nombre:   "; getline(cin, nuevoNombre);
 			cout << "Apellido: "; getline(cin, nuevoApellido);
-			cout << "DNI:      "; getline(cin, nuevoDni); //validar
-			cout << "Edad:     "; cin >> nuevaEdad; //validar
+			cout << "DNI:      "; nuevoDni = esEntero(10,7); 
+			cout << "Edad:     "; nuevaEdad = atoi(esEntero(10,8).c_str()); 
 			cout << "-----------------------------------------\n\n";
 			
 			cout << "-----------------------------------------\n";
@@ -280,7 +282,7 @@ void buscarCuenta(){
 	}
 	system("cls");
 	cout << "\nIngrese el Numero de Cuenta o DNI para buscar: ";
-	cin >> var;
+	var = esEntero(47,1);
 	
 	leer >> auxNombre;
 	while(!leer.eof()){
@@ -303,8 +305,38 @@ void buscarCuenta(){
 	cout << "\nPresione una tecla para volver al menu anterior....";
 	getch();
 }
-bool esEntero(){
-	
+string esEntero(int x, int y){
+
+	bool band;
+	string n;
+	do{
+		band = true;
+		cin >> n;
+		for(int i = 0; i < n.length(); i++){
+			switch(n[i]){
+				case '0':
+				case '1':
+				case '2':
+				case '3':
+				case '4':
+				case '5':
+				case '6':
+				case '7':
+				case '8':
+				case '9':break;
+				default: band = false; 
+			}
+		}
+		if(band == false){
+			cout << "Ingrese un numero!!!";
+			Sleep(250);
+			gotoxy(x,y);
+			cout << "                    \n";
+			cout << "                    ";
+			gotoxy(x,y);
+		}
+	}while(band == false);
+	return n;
 }
 bool validarNumeroDeCuenta(string x){
 	string aux;
@@ -357,7 +389,17 @@ string generarNumeroDeCuenta(){
 	}while(validarNumeroDeCuenta(v));
 	return v;
 }
-
-
+void gotoxy(int a,int b){
+    HANDLE hcon;
+    hcon = GetStdHandle(STD_OUTPUT_HANDLE);
+    COORD dwPos;
+    dwPos.X = a;
+    dwPos.Y= b;
+    SetConsoleCursorPosition(hcon,dwPos);  
+}
+void menuCuenta(){
+	system("cls");
+	cout << "";
+}
 
 
