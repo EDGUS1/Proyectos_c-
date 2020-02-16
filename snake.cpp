@@ -89,7 +89,7 @@ int main(){
 			if(opc == 'y') s.setY(s.getY() + 1);
 			if(opc == 'X') s.setX(s.getX() + 1);
 			
-			Sleep(100);
+			Sleep(40);
 			
 			if(gameOver(s.getX(),s.getY())){
 				system("cls");
