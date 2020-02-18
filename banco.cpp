@@ -96,7 +96,7 @@ int main(){
 	//MENU
 	do{
 		system("cls");
-		cout << "\t\tMENU\n1. Aniadir cuenta\n2. Eliminar cuenta\n3. Modificar cuenta\n4. Ingresar a la cuenta (estado,traspaso,etc)\n5. Mostrar cuentas";
+		cout << "\t\tMENU\n1. Aniadir cuenta\n2. Eliminar cuenta\n3. Modificar cuenta\n4. Ingresar a la cuenta\n5. Mostrar cuentas";
 		cout << "\n6. Buscar Cuenta\n0. Salir\nOpcion: ";
 		opc = atoi(esEntero(8,8).c_str());
 		switch(opc){
@@ -132,7 +132,7 @@ void nuevaCuenta(){
 	cout << "Apellido: "; getline(cin, apellido);
 	cout << "DNI:      "; dni = esEntero(10,3); 
 	cout << "Edad:     "; edad = atoi(esEntero(10,4).c_str()); 
-	cout << "Monto:	   "; monto = atoi(esEntero(10,4).c_str()); 
+	cout << "Monto:	  "; monto = atoi(esEntero(10,5).c_str()); 
 	
 	Persona p(nombre,apellido,dni,edad,monto);
 	
@@ -415,8 +415,8 @@ void menuCuenta(){
 	int opc;
 	do{
 		system("cls");
-		cout << "1. Estado de la cuenta\n2. Realizar transaccion\n3. Retirar dinero\n4. Ingresar dinero\n0. Salir\nOpcion: ";
-		opc = atoi(esEntero(8,4).c_str());
+		cout << "\tMENU\n1. Estado de la cuenta\n2. Realizar transaccion\n3. Retirar dinero\n4. Ingresar dinero\n0. Salir\nOpcion: ";
+		opc = atoi(esEntero(8,6).c_str());
 		switch(opc){
 			case 0: break;
 			case 1: estadoCuenta();break;
@@ -505,7 +505,7 @@ void transaccion(){
 			aM1 = atoi(auxMonto.c_str());
 			aT1 = atoi(auxT.c_str());
 			cout << "Ingrese la cuenta de destino: ";
-			var2 = esEntero(29,0);
+			var2 = esEntero(30,1);
 		}else{
 			escribir << auxNombre << " " << auxApellido << " " << auxDni << " " << auxEdad << " " << auxNumeroDeCuenta;
 			escribir << " " << auxMonto << " "<< auxT << endl;
@@ -663,7 +663,7 @@ void ingresoDinero(){
 	escribir.close();
 	remove("Registro.txt");
 	rename("var.txt","Registro.txt");
-	cout << "Presione una tecla para volver...";
+	cout << "\nPresione una tecla para volver...";
 	getch();
 }
 

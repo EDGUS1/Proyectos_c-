@@ -9,7 +9,7 @@
 using namespace std;
 
 void gotoxy(int, int);
-bool gameOver(int, int);
+bool gameOver(int, int, vector<vector<int> >);
 void marco();
 
 class Fruta{
@@ -63,7 +63,7 @@ class Serpiente{
 
 int main(){
 	
-	char opc = 'X';
+	char opc = 'X',opcAnterior = 'd',a;
 	vector < vector<int> > f;
 	Serpiente s;
 	Fruta fruta;
@@ -71,76 +71,107 @@ int main(){
 	fruta.generar();
 	marco();
 	
-	while(true){
+	while(!gameOver(s.getX(),s.getY(), f)){
 		
-		while(!kbhit()){//Se movera en la posicion elegida anteriormente
+		vector <int> v;
 		
-			vector <int> v;
-			v.push_back(s.getX());
-			v.push_back(s.getY());
-			f.push_back(v);
+		v.push_back(s.getX());
+		v.push_back(s.getY());
+		f.push_back(v);
+		
+		for(int i = 0; i < f.size(); i++){
+			gotoxy(f[i][0], f[i][1]);
+			cout << char(219);
+		}
+		if(opc == 'x') s.setX(s.getX() - 1);
+		if(opc == 'Y') s.setY(s.getY() - 1);
+		if(opc == 'y') s.setY(s.getY() + 1);
+		if(opc == 'X') s.setX(s.getX() + 1);
 			
-			for(int i = 0; i < f.size(); i++){
-				gotoxy(f[i][0], f[i][1]);
-				cout << char(219);
-			}
-			if(opc == 'x') s.setX(s.getX() - 1);
-			if(opc == 'Y') s.setY(s.getY() - 1);
-			if(opc == 'y') s.setY(s.getY() + 1);
-			if(opc == 'X') s.setX(s.getX() + 1);
-			
-			Sleep(40);
-			
-			if(gameOver(s.getX(),s.getY())){
-				system("cls");
-				gotoxy(36,12);
-				cout << "GAME OVER";
-				gotoxy(35,13);
-				cout << "SCORE = " << s.getScore();
-				gotoxy(0,20);
-				Sleep(100);
-				exit(1);
-			}
-			
-			if(!fruta.existe(v)){
-				gotoxy(f[0][0], f[0][1]);
-				cout << " ";
-				f.erase(f.begin());
-			}else{
-				s.incrementarLongtud();
-				fruta.generar();
-			}
-
+		Sleep(75);
+		
+		if(!fruta.existe(v)){
+			gotoxy(f[0][0], f[0][1]);
+			cout << " ";
+			f.erase(f.begin());
+		}else{
+			s.incrementarLongtud();
+			fruta.generar();
 		}
 		
-		switch(getch()){ //Se elige la direccion del movimiento
-			case 'a': 
-				s.setX(s.getX() - 1); 
-				opc = 'x';
-				break;
-			case 'w': 
-				s.setY(s.getY() - 1);
-				opc = 'Y';
-				break;
-			case 's': 
-				s.setY(s.getY() + 1);
-				opc = 'y';
-				break;
-			case 'd': 
-				s.setX(s.getX() + 1);
-				opc = 'X';
-				break;
-		}		
-		Sleep(30);
+		if(kbhit()){
+			a = getch();
+			switch(a){ //Se elige la direccion del movimiento
+				case 'a': 
+					if((a != opcAnterior) && (opcAnterior != 'd')){
+						s.setX(s.getX() - 1);
+						if(opcAnterior == 'w'){
+							s.setY(s.getY() + 1);
+						}else{
+							s.setY(s.getY() - 1);
+						}
+						opc = 'x';
+					}
+					break;
+				case 'w': 
+					if((a != opcAnterior) && (opcAnterior != 's')){
+						s.setY(s.getY() - 1);
+						if(opcAnterior == 'a'){
+							s.setX(s.getX() + 1);
+						}else{
+							s.setX(s.getX() - 1);
+						}
+						opc = 'Y';
+					}
+					break;
+				case 's': 
+					if((a != opcAnterior) && (opcAnterior != 'w')){
+						s.setY(s.getY() + 1);
+						if(opcAnterior == 'a'){
+							s.setX(s.getX() + 1);
+						}else{
+							s.setX(s.getX() - 1);
+						}
+						opc = 'y';	
+					}
+					break;
+				case 'd': 
+					if((a != opcAnterior) && (opcAnterior != 'a')){
+						s.setX(s.getX() + 1);
+						if(opcAnterior == 'w'){
+							s.setY(s.getY() + 1);
+						}else{
+							s.setY(s.getY() - 1);
+						}
+						opc = 'X';
+					}
+					break;
+			}
+			opcAnterior = a;		
+		}
+		
 	}
-	
+	system("cls");
+	gotoxy(36,12);
+	cout << "GAME OVER";
+	gotoxy(35,13);
+	cout << "SCORE = " << s.getScore();
+	gotoxy(0,20);
+	Sleep(100);
 	gotoxy(0,20);
 	return 0;
 }
 
-bool gameOver(int x, int y){
+bool gameOver(int x, int y, vector<vector<int> > vec){
 	if(x == 79 || x == 0 || y == 0 || y == 23){
 		return true;
+	}
+	if(!vec.empty()){
+		for(int i = 1; i < vec.size(); i++){
+			if((vec[0][0] == vec[i][0]) && (vec[0][1] == vec[i][1])){
+				return true;
+			}
+		}
 	}
 	return false;
 }

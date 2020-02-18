@@ -5,7 +5,7 @@
 
 using namespace std; 
 
-void disparo(int, int);
+void disparo(int, int, int&);
 void gotoxy(int,int);
 void marco();
 
@@ -62,38 +62,55 @@ int main(){
 	Nave n;
 	Objetivo o;
 	char a;
-	int x = 20, y = 20, cantidad = 0;
+	int x = 20, y = 20, cantidad = 0, contador = 30,cuenta = 0;
 	
 	marco();
 	o.dibujarObjetivo();
+	n.dibujar();
+	gotoxy(75,1);
+	cout << contador;
 	
-	while(true){
+	while(contador > 0){
 		
-		n.dibujar();
-		
-		switch(getch()){
+		if(kbhit()){
+			switch(getch()){
 			
-			case 13: 
-				disparo(n.getX(),n.getY() - 1);
-				if(o.getX() == n.getX()){
-					cantidad++;
-					o.dibujarObjetivo();
-				}
-				break;
-			case 97: 
-				n.borrar();
-				n.setX(n.getX() - 1);
-				break;
-			case 100: 
-				n.borrar();
-				n.setX(n.getX() + 1); 
-				break;
+				case 13: 
+					disparo(n.getX(),n.getY() - 1,cuenta);
+					if(o.getX() == n.getX()){
+						cantidad++;
+						o.dibujarObjetivo();
+					}
+					break;
+				case 97: 
+					n.borrar();
+					n.setX(n.getX() - 1);
+					break;
+				case 100: 
+					n.borrar();
+					n.setX(n.getX() + 1); 
+					break;
+			}
+			n.dibujar();
 		}
+		if(cuenta >= 20000){
+			contador--;
+			cuenta = 0;
+			gotoxy(75,1);
+			cout << "   ";
+			gotoxy(75,1);
+			cout << contador;
+		}
+		cuenta++;
 	}
+	system("cls");
+	gotoxy(35,13);
+	cout << "SCORE = " << cantidad*10;
+	Sleep(3000);
 	gotoxy(0,20);
 	return 0;
 }
-void disparo(int x, int y){
+void disparo(int x, int y, int &c){
 	cout << "\a";
 	for(int i = 0; i < 21; i++){
 		gotoxy(x,y);
@@ -101,6 +118,7 @@ void disparo(int x, int y){
 		Sleep(18);
 		gotoxy(x,y--);
 		cout << " ";
+		c += 500;
 	}
 }
 
